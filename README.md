@@ -49,7 +49,7 @@ poetry run python pipeline/estimator/run_train_pipeline.py
 
 #### Pretrained Weights
 
-The pre-trained model weights are saved in the `pipeline/weights` directory. You can use these weights to skip the training process and directly use the model for inference.
+The pre-trained model weights can be found in [this Google drive link](https://drive.google.com/file/d/1TsiYmv4j8ql5rH3WVHimamWaepoIGeZF/view?usp=sharing). 
 
 ### Inference
 
@@ -87,7 +87,7 @@ class Config:
     MODEL_NAME = "AgeAlexNet"  # or "SmallCNN"
     ACCURACY_THRESHOLD = 5
     CASCADE_PATH = "pipeline/video_image/haarcascade_frontalface_default.xml"
-    FRAME_OUTPUT_DIR = "preprocessed_frames"
+    OUTPUT_DIR = "outputs"
 ```
 
 ## Streamlit App
