@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
 
-from pipeline.estimator.data_prep import load_data
-from pipeline.estimator.models import AgeAlexNet, SmallCNN
-from pipeline.estimator.train_eval import evaluate_model, train_model
+from estimator.data_prep import load_data
+from estimator.models import AgeAlexNet, SmallCNN
+from estimator.train_eval import evaluate_model, train_model
 
 
 def main() -> None:
