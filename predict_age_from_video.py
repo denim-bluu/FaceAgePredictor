@@ -1,6 +1,6 @@
 import argparse
 
-from pipeline.config import Config
+from pipeline.utils import get_config
 from pipeline.processing import process_video
 
 if __name__ == "__main__":
@@ -8,22 +8,22 @@ if __name__ == "__main__":
         description="Predict ages from a video input with face detection."
     )
     parser.add_argument(
-        "--video_path", type=str, required=True, help="Path to the input video."
-    )
-    parser.add_argument(
         "--model_name",
         type=str,
-        default=Config.MODEL_NAME,
-        help="Name of the model to use.",
+        required=True,
+        help="Name of the model to use for prediction.",
     )
     parser.add_argument(
-        "--model_path",
+        "--weight_path", type=str, required=True, help="Path to the model weights."
+    )
+    parser.add_argument(
+        "--output_dir",
         type=str,
-        default=Config.WEIGHT_PATH,
-        help="Path to the trained model weights.",
+        required=True,
+        help="Directory to save the processed video.",
     )
     parser.add_argument(
-        "--output_dir", type=str, required=True, help="Path to save the output video."
+        "--video_path", type=str, required=True, help="Path to the input video."
     )
     parser.add_argument(
         "--frame_rate",
@@ -35,11 +35,12 @@ if __name__ == "__main__":
         "--save_frames", action="store_true", help="Save preprocessed frames locally."
     )
     args = parser.parse_args()
-
+    config = get_config()
     process_video(
-        args.video_path,
+        config,
         args.model_name,
-        args.model_path,
+        args.weight_path,
+        args.video_path,
         args.output_dir,
         args.frame_rate,
         args.save_frames,

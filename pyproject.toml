@@ -24,12 +24,16 @@ psutil = "^5.9.8"
 fastapi = "^0.111.0"
 streamlit = "^1.35.0"
 ffmpeg-python = "^0.2.0"
+gputil = "^1.4.0"
+omegaconf = "^2.3.0"
 
 
 [tool.poetry.group.dev.dependencies]
 ptpython = "^3.0.27"
 mypy = "^1.10.0"
 ruff = "^0.4.8"
+ipython = "^8.25.0"
+notebook = "^7.2.1"
 
 [build-system]
 requires = ["poetry-core"]

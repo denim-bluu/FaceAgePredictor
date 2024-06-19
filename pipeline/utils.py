@@ -1,17 +1,20 @@
 import logging
 import os
 
-import cv2
 import ffmpeg
+import GPUtil
 import psutil
 import torch
-from PIL import Image
-from torchvision import transforms
+from omegaconf import OmegaConf
 
 # Setup logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
+
+
+def get_config(config_path: str = "config.yaml"):
+    return OmegaConf.load(config_path)
 
 
 def convert_video(input_path: str, output_path: str):
@@ -23,20 +26,18 @@ def convert_video(input_path: str, output_path: str):
         print("Error:", e)
 
 
-def log_resource_usage(prefix: str = "") -> None:
+# Function to log resource usage
+def log_resource_usage(prefix=""):
     process = psutil.Process(os.getpid())
     mem_info = process.memory_info()
+    gpus = GPUtil.getGPUs()
+    gpu_info = gpus[0] if gpus else None
+    gpu_memory_used = gpu_info.memoryUsed if gpu_info else 0
+    gpu_memory_total = gpu_info.memoryTotal if gpu_info else 0
     logging.info(
-        f"{prefix} CPU: {psutil.cpu_percent()}% | RAM: {mem_info.rss / 1024 ** 2:.2f} MB"
+        f"{prefix} CPU: {psutil.cpu_percent()}% | RAM: {mem_info.rss / 1024 ** 2:.2f} MB | GPU: {gpu_memory_used}/{gpu_memory_total} MB"
     )
 
 
 def get_device() -> torch.device:
     return torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-
-def preprocess_image(image: cv2.Mat, transform: transforms.Compose) -> torch.Tensor:
-    image_pil = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB)).convert("RGB")
-    image_transformed = transform(image_pil)
-    image_tensor = torch.Tensor(image_transformed)
-    return image_tensor.unsqueeze(0)

@@ -1,8 +1,38 @@
 import torch
 import torch.nn as nn
 from torchvision import models
+from torchvision.models import efficientnet_b3
 
-from pipeline.utils import get_device
+
+class ModelFactory:
+    """
+    A factory class for creating different types of models.
+
+    Methods:
+        create_model: Creates and returns a model based on the given model name.
+    """
+    @staticmethod
+    def create_model(model_name: str) -> nn.Module:
+        """
+        Creates and returns a model based on the given model name.
+
+        Args:
+            model_name (str): The name of the model to create.
+
+        Returns:
+            nn.Module: The created model.
+
+        Raises:
+            ValueError: If the given model name is not supported.
+        """
+        if model_name == "SmallCNN":
+            return SmallCNN()
+        elif model_name == "AgeAlexNet":
+            return AgeAlexNet()
+        elif model_name == "AgeEfficientNet":
+            return AgeEfficientNet()
+        else:
+            raise ValueError(f"Model {model_name} is not supported.")
 
 
 class SmallCNN(nn.Module):
@@ -44,23 +74,33 @@ class AgeAlexNet(nn.Module):
         return x
 
 
-def load_model(model_name: str, model_path: str) -> nn.Module:
-    device = get_device()
+class AgeEfficientNet(nn.Module):
+    def __init__(self):
+        super(AgeEfficientNet, self).__init__()
+        self.efficientnet = efficientnet_b3(pretrained=True)
+        self.efficientnet.classifier = nn.Sequential(
+            nn.Dropout(p=0.5),
+            nn.Linear(
+                self.efficientnet.classifier[1].in_features, 1
+            ),  # Output a single value for age prediction
+        )
 
-    if model_name == "SmallCNN":
-        model = SmallCNN()
-    elif model_name == "AgeAlexNet":
-        model = AgeAlexNet()
-    else:
-        raise ValueError(f"Model {model_name} is not supported.")
-
-    model.load_state_dict(torch.load(model_path, map_location=device))
-    model.to(device)
-    model.eval()
-    return model
+    def forward(self, x):
+        x = self.efficientnet(x)
+        return x
 
 
 def predict_age(model: torch.nn.Module, image_tensor: torch.Tensor) -> float:
+    """
+    Predicts the age based on the given image tensor using the given model.
+
+    Args:
+        model (torch.nn.Module): The model to use for prediction.
+        image_tensor (torch.Tensor): The image tensor to predict the age from.
+
+    Returns:
+        float: The predicted age.
+    """
     with torch.no_grad():
         output = model(image_tensor)
     return output.item()

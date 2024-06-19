@@ -1,31 +1,57 @@
+# process.py
 import logging
 from datetime import datetime
 
 import cv2
 import numpy as np
+import torch
+from omegaconf import DictConfig, ListConfig
+from PIL import Image
+from torchvision import transforms
 from tqdm import tqdm
 
-from pipeline.config import Config
 from pipeline.estimator.data_prep import get_transform
-from pipeline.estimator.models import load_model, predict_age
-from pipeline.utils import get_device, preprocess_image
+from pipeline.estimator.models import ModelFactory, predict_age
+from pipeline.utils import get_device
 from pipeline.video_image.face_detection import FaceDetector
 from pipeline.video_image.video_to_image import extract_frames, save_frames_to_img
 
 
+def preprocess_image(image: cv2.Mat, transform: transforms.Compose) -> torch.Tensor:
+    image_pil = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB)).convert("RGB")
+    image_transformed = transform(image_pil)
+    image_tensor = torch.Tensor(image_transformed)
+    return image_tensor.unsqueeze(0)
+
+
 def process_video(
-    video_path: str,
+    config: DictConfig | ListConfig,
     model_name: str,
-    model_path: str,
+    weight_path: str,
+    video_path: str,
     output_dir: str,
     frame_rate: int = 5,
     save_frames: bool = False,
 ) -> str:
-    device = get_device()
-    model = load_model(model_name, model_path)
-    transform = get_transform()
+    """
+    Process a video to detect faces and predict their ages.
 
-    face_detector = FaceDetector(cascade_path=Config.CASCADE_PATH)
+    Args:
+        config (DictConfig | ListConfig): Configuration parameters.
+        video_path (str): Path to the video file.
+        frame_rate (int, optional): Frame rate for video processing. Defaults to 5.
+        save_frames (bool, optional): Whether to save the frames or not. Defaults to False.
+
+    Returns:
+        str: Path to the processed video.
+    """
+    device = get_device()
+    model = ModelFactory.create_model(model_name)
+    model.load_state_dict(torch.load(weight_path, map_location=device))
+    model.to(device).eval()
+    transform = get_transform(config)
+
+    face_detector = FaceDetector(cascade_path=config.paths.cascade_path)
     frames = extract_frames(video_path, frame_rate)
     if save_frames:
         save_frames_to_img(frames, f"{output_dir}/frames")
@@ -54,7 +80,6 @@ def process_video(
 
         if out is None:
             fourcc = cv2.VideoWriter_fourcc(*"FMP4")  # type: ignore
-
             output_path = f"{output_dir}/{datetime.now().strftime('%Y%m%d%H%M%S')}.mp4"
             out = cv2.VideoWriter(
                 output_path, fourcc, 20.0, (frame.shape[1], frame.shape[0])
@@ -77,17 +102,30 @@ def process_video(
 
 
 def process_image(
-    image_path: str, model_name: str, model_path: str, output_dir: str
+    config: DictConfig | ListConfig,
+    model_name: str,
+    weight_path: str,
+    output_dir: str,
+    image_path: str,
 ) -> str | None:
-    logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-    )
+    """
+    Process an image to detect faces and predict their ages.
+
+    Args:
+        config (DictConfig | ListConfig): Configuration parameters.
+        image_path (str): Path to the image file.
+
+    Returns:
+        str | None: Path to the processed image if faces are detected, None otherwise.
+    """
 
     device = get_device()
-    model = load_model(model_name, model_path)
-    transform = get_transform()
+    model = ModelFactory.create_model(model_name)
+    model.load_state_dict(torch.load(weight_path, map_location=device))
+    model.to(device).eval()
+    transform = get_transform(config)
 
-    face_detector = FaceDetector(cascade_path=Config.CASCADE_PATH)
+    face_detector = FaceDetector(cascade_path=config.paths.cascade_path)
 
     image = cv2.imread(image_path)
     if image is None:
@@ -97,7 +135,7 @@ def process_image(
     faces = face_detector.detect_faces(image)
     if not faces:
         logging.warning("No faces detected in the image.")
-        return
+        return None
 
     for face, (x, y, w, h) in faces:
         image_tensor = preprocess_image(face, transform).to(device)
@@ -113,6 +151,7 @@ def process_image(
                 2,
             )
             cv2.rectangle(image, (x, y), (x + w, y + h), (255, 0, 0), 2)
+            logging.info(f"Predicted age: {age:.2f}")
 
     output_path = f"{output_dir}/{datetime.now().strftime('%Y%m%d%H%M%S')}.jpg"
     cv2.imwrite(output_path, cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
