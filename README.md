@@ -35,7 +35,7 @@ The Python version used in this project is 3.10.
 
 ## Dataset
 
-The dataset used for training and validation of the model is the [Facial Age](https://www.kaggle.com/datasets/jangedoo/utkface-new).
+The dataset used for training and validation of the model is the [UKT Face](https://www.kaggle.com/datasets/jangedoo/utkface-new).
 
 ## Usage
 
@@ -49,7 +49,7 @@ poetry run python pipeline/estimator/run_train_pipeline.py
 
 #### Pretrained Weights
 
-The pre-trained model weights can be found in [this Google drive link](https://drive.google.com/file/d/1TsiYmv4j8ql5rH3WVHimamWaepoIGeZF/view?usp=sharing).
+The pre-trained model weights can be found in [this Google drive link](https://drive.google.com/file/d/1zqqeUoK3xUgK9HAFojzu_y7q8lYpJ2QV/view?usp=sharing).
 
 ### Inference
 

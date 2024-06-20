@@ -77,7 +77,7 @@ class AgeAlexNet(nn.Module):
 class AgeEfficientNet(nn.Module):
     def __init__(self):
         super(AgeEfficientNet, self).__init__()
-        self.efficientnet = efficientnet_b3(pretrained=True)
+        self.efficientnet = efficientnet_b3(weights="IMAGENET1K_V1")
         self.efficientnet.classifier = nn.Sequential(
             nn.Dropout(p=0.5),
             nn.Linear(

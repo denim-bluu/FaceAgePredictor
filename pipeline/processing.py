@@ -1,4 +1,3 @@
-# process.py
 import logging
 from datetime import datetime
 
@@ -18,7 +17,7 @@ from pipeline.video_image.video_to_image import extract_frames, save_frames_to_i
 
 
 def preprocess_image(image: cv2.Mat, transform: transforms.Compose) -> torch.Tensor:
-    image_pil = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB)).convert("RGB")
+    image_pil = Image.fromarray(image).convert("RGB")
     image_transformed = transform(image_pil)
     image_tensor = torch.Tensor(image_transformed)
     return image_tensor.unsqueeze(0)
@@ -51,7 +50,7 @@ def process_video(
     model.to(device).eval()
     transform = get_transform(config)
 
-    face_detector = FaceDetector(cascade_path=config.paths.cascade_path)
+    face_detector = FaceDetector()
     frames = extract_frames(video_path, frame_rate)
     if save_frames:
         save_frames_to_img(frames, f"{output_dir}/frames")
@@ -125,9 +124,9 @@ def process_image(
     model.to(device).eval()
     transform = get_transform(config)
 
-    face_detector = FaceDetector(cascade_path=config.paths.cascade_path)
+    face_detector = FaceDetector()
 
-    image = cv2.imread(image_path)
+    image = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_RGB2BGR)
     if image is None:
         logging.error(f"Could not read image: {image_path}")
         raise ValueError(f"Could not read image: {image_path}")
@@ -146,7 +145,7 @@ def process_image(
                 f"Age: {age:.2f}",
                 (x, y - 10),
                 cv2.FONT_HERSHEY_SIMPLEX,
-                0.9,
+                1.5,
                 (255, 0, 0),
                 2,
             )

@@ -165,5 +165,6 @@ face_age/*
 checkpoint.pt
 runs/*
 inputs/*
+outputs/*
 
 .vscode/*
