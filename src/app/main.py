@@ -4,15 +4,18 @@ import torch
 from src.data.face_detection import FaceDetector
 from src.models.resnet_model import ResNetAgePredictor
 
-from .image_prediction import image_prediction_page
-from .video_prediction import video_prediction_page
-from .webcam_prediction import webcam_prediction_page
+from src.app.image_prediction import image_prediction_page
+from src.app.video_prediction import video_prediction_page
+from src.app.webcam_prediction import webcam_prediction_page
+
+from src.utils.load_config import load_config
 
 
 @st.cache_resource
 def load_model():
-    model = ResNetAgePredictor(pretrained=False)
-    model.load_state_dict(torch.load("path/to/your/model.pth"))
+    config = load_config()
+    model = ResNetAgePredictor()
+    model.load_state_dict(torch.load(config["paths"]["model_path"]))
     model.eval()
     return model
 

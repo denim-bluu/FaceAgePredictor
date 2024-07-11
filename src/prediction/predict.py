@@ -15,7 +15,7 @@ def preprocess_image(image: Image.Image):
 
 
 def load_model(model_path: str):
-    model = ResNetAgePredictor(pretrained=False)
+    model = ResNetAgePredictor()
     model.load_state_dict(torch.load(model_path))
     model.eval()
     return model

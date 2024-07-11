@@ -7,10 +7,6 @@ from torch.utils.data import DataLoader, Dataset, Subset
 from torchvision import transforms
 from torchvision.transforms import Compose
 
-from src.data.face_detection import FaceDetector
-
-face_detector = FaceDetector()
-
 
 class FaceAgeDataset(Dataset):
     def __init__(self, root: str, transform: Optional[Compose] = None):
@@ -29,16 +25,14 @@ class FaceAgeDataset(Dataset):
             img = Image.open(f).convert("RGB")
 
         age = float(img_name.split("_")[0])
-
-        face_img = face_detector.detect_face(img)
-        if face_img is None:
+        if img is None:
             # Return a placeholder or skip this sample
             return self.__getitem__((idx + 1) % len(self))
 
         if self.transform:
-            face_img = self.transform(face_img)
+            img = self.transform(img)
 
-        return face_img, age
+        return img, age
 
 
 def get_transforms() -> Compose:

@@ -1,3 +1,4 @@
+import os
 import torch
 
 from src.data.data_prep import load_data
@@ -5,6 +6,7 @@ from src.models.resnet_model import ResNetAgePredictor
 from src.training.train import train_with_progressive_unfreezing
 from src.utils.load_config import load_config
 from src.utils.metrics import calculate_mae, calculate_rmse
+from torch.utils.tensorboard.writer import SummaryWriter
 
 
 def main():
@@ -21,6 +23,12 @@ def main():
     model = ResNetAgePredictor().to(device)
     # model = MobileNetAgePredictor(pretrained=True).to(device)
 
+    # Load TensorBoard writer
+    # Initialize TensorBoard writer
+    log_dir = config["paths"]["tensorboard_log_dir"]
+    os.makedirs(os.path.dirname(log_dir), exist_ok=True)
+    writer = SummaryWriter(log_dir=log_dir)
+
     # Train the model
     trained_model = train_with_progressive_unfreezing(
         model=model,
@@ -29,11 +37,15 @@ def main():
         num_epochs=config["training"]["num_epochs"],
         initial_lr=config["training"]["initial_lr"],
         device=device,
+        writer=writer,
         unfreeze_schedule=config["training"]["unfreeze_schedule"],
     )
 
+    # Check folder exists
+    model_path = config["paths"]["model_path"]
+    os.makedirs(os.path.dirname(model_path), exist_ok=True)
     # Save the trained model
-    torch.save(trained_model.state_dict(), config["paths"]["model_path"])
+    torch.save(trained_model.state_dict(), model_path)
 
     # Evaluate on test set
     trained_model.eval()

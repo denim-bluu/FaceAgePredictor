@@ -29,9 +29,9 @@ class ResNetAgePredictor(AgePredictor):
         num_ftrs = self.resnet.fc.in_features
 
         # Replace the last fully connected layer with a custom regressor
-        self.resnet.fc = nn.Sequential(
+        self.resnet.fc = nn.Sequential( # type: ignore
             nn.Linear(num_ftrs, 256), nn.ReLU(), nn.Dropout(0.5), nn.Linear(256, 1)
-        )  #
+        ) 
 
         # Freeze the pre-trained layers
         self.freeze_layers()
