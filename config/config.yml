@@ -1,0 +1,9 @@
+training:
+  batch_size: 32
+  initial_lr: 0.001
+  num_epochs: 10
+  unfreeze_schedule: [5, 10, 15, 20]
+
+paths:
+  data_dir: "data/UTKFace/"
+  model_path: "models/saved/"
