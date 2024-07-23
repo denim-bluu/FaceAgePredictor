@@ -58,55 +58,6 @@ The project uses transfer learning with ResNet50 or MobileNet as the base model,
 
 ![alt text](static/image.png)
 
-Below is GPT generated Mermaid diagram for the model architecture:
-
-```mermaid
-graph TD
-    A[UTK Face Images] --> B[Pre-processing]
-    B --> C[Data Loader]
-    D[Pre-Trained Weights] --> E[ResNet50]
-    D --> F[MobileNet]
-    E --> G[Models]
-    F --> G
-    H[Modified Final Layer<br>for Regression Task] --> E
-    H --> F
-    I[Linear 'n, 256'] --> H
-    J[ReLU] --> H
-    K[Dropout '50%'] --> H
-    L[Linear '256, 1'] --> H
-    C --> M[Training]
-    G --> M
-    N[L1] --> O[Loss Function<br>for Regression]
-    P[MAE] --> O
-    Q[MSE] --> O
-    O --> M
-    R[Learning Rate<br>Adjustment] --> S[Gradual Fine Tuning]
-    T[Gradual Unfreeze<br>Pre-Trained Layers] --> S
-    S --> U[Transfer Learning]
-    U --> M
-    M --> V[Weights]
-    G --> W[Web Application]
-    V --> W
-    X[User] --> Y[Face Detection<br>MTCNN]
-    Y --> Z[Cropped Image]
-    Z --> W
-    W --> AA[Age]
-
-subgraph Modified Final Layer
-    I
-    J
-    K
-    L
-end
-
-subgraph Transfer Learning Process
-    R
-    T
-    S
-    U
-end
-```
-
 ## Theoretical Background (Study Purpose...)
 
 ### Model Selection: ResNet vs MobileNet
