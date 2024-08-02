@@ -7,7 +7,7 @@ This project implements a deep learning model for predicting the age of a person
 
 ## Warning
 - It currently only works on Windows due to the OpenCV2 dependency. A new branch, feature-make-it-work-on-mac, includes some tweaks to make it runnable on Mac, but it is not stable.
-- As you can see from the demo below, it is not accurate yet 🤣. I would like to investigate further to optimise the model’s performance, but I have decided not to continue any further since this project was for educational purposes and not for distributing a perfectly tunned deep learning model.
+- As you can see from the demo below, it is not accurate yet 🤣 (I am nearly 30 but it says I am 24). I would like to investigate further to optimise the model’s performance, but I have decided not to continue any further since this project was for educational purposes and not for distributing a perfectly tunned deep learning model.
 
 ## Demo
 https://github.com/user-attachments/assets/11b7719b-8380-45a5-a611-d2d214eb3b6c
