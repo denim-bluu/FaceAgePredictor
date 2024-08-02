@@ -5,6 +5,10 @@
 
 This project implements a deep learning model for predicting the age of a person from facial images. It utilises transfer learning with pre-trained ResNet or MobileNet architectures, implemented in PyTorch.
 
+## Demo
+![C7A832AE-C507-441B-B536-F1AAE453A6B5_1_102_o](https://github.com/user-attachments/assets/84649ea2-f910-4035-ab7b-94d2be368a66)
+
+
 ## Features
 
 - Transfer learning using ResNet50 or MobileNet
