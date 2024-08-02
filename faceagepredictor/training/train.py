@@ -1,12 +1,11 @@
 import torch
+from loguru import logger
 from torch.utils.data import DataLoader
-from typing import List
+from torch.utils.tensorboard.writer import SummaryWriter
 from tqdm import tqdm
 
-from src.models.base_model import AgePredictor
-from src.utils.metrics import calculate_mae, calculate_rmse
-from torch.utils.tensorboard.writer import SummaryWriter
-from loguru import logger
+from faceagepredictor.models.base_model import AgePredictor
+from faceagepredictor.utils.metrics import calculate_mae, calculate_rmse
 
 
 def train_with_progressive_unfreezing(
@@ -17,7 +16,7 @@ def train_with_progressive_unfreezing(
     initial_lr: float,
     device: torch.device,
     writer: SummaryWriter,
-    unfreeze_schedule: List[int] = [5, 10, 15, 20],
+    unfreeze_schedule: list[int] = [5, 10, 15, 20],
 ) -> AgePredictor:
     """
     Trains the model using a progressive unfreezing strategy.

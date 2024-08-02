@@ -2,9 +2,9 @@ import torch
 from PIL import Image
 from torch import nn
 
-from src.data.data_prep import get_transforms
-from src.data.face_detection import FaceDetector
-from src.models.resnet_model import (
+from faceagepredictor.data.data_prep import get_transforms
+from faceagepredictor.data.face_detection import FaceDetector
+from faceagepredictor.models.resnet_model import (
     ResNetAgePredictor,
 )
 

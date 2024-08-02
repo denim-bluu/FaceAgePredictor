@@ -14,10 +14,17 @@ This project implements a deep learning model for predicting the age of a person
 
 ## Installation
 
-1 Install the required packages via poetry:
+1 Install the required packages via PDM:
 
    ```bash
-   poetry install
+   pdm install
+   pip install opencv-python # This needs to be manually installed
+   pip install scikit-build
+   pip install cmake
+   curl https://files.pythonhosted.org/packages/01/9b/be08992293fb21faf35ab98e06924d7407fcfca89d89c5de65442631556a/opencv-python-4.5.3.56.tar.gz > opencv.tar.gz
+   tar -xzvf opencv.tar.gz
+   cd opencv-python-4.5.3.56
+   python3 setup.py install
    ```
 
 ## Usage

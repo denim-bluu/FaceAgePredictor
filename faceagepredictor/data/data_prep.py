@@ -1,5 +1,4 @@
 import os
-from typing import Optional, Tuple
 
 from PIL import Image
 from sklearn.model_selection import train_test_split
@@ -9,7 +8,7 @@ from torchvision.transforms import Compose
 
 
 class FaceAgeDataset(Dataset):
-    def __init__(self, root: str, transform: Optional[Compose] = None):
+    def __init__(self, root: str, transform: Compose | None = None):
         self.root = root
         self.transform = transform
         self.samples = [f for f in os.listdir(root) if f.endswith(".jpg")]
@@ -17,7 +16,7 @@ class FaceAgeDataset(Dataset):
     def __len__(self):
         return len(self.samples)
 
-    def __getitem__(self, idx: int) -> Tuple[Image.Image, float]:
+    def __getitem__(self, idx: int) -> tuple[Image.Image, float]:
         img_name = self.samples[idx]
         img_path = os.path.join(self.root, img_name)
 
@@ -47,7 +46,7 @@ def get_transforms() -> Compose:
 
 def load_data(
     data_dir: str, batch_size: int = 32, test_size: float = 0.1, val_size: float = 0.1
-) -> Tuple[DataLoader, DataLoader, DataLoader]:
+) -> tuple[DataLoader, DataLoader, DataLoader]:
     """
     Loads the dataset and returns data loaders for training, validation, and test sets.
 

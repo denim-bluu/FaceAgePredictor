@@ -1,29 +1,76 @@
-[tool.poetry]
-name = "faceagepredict"
+[project]
+name = "FaceAgePredictor"
 version = "0.1.0"
-description = ""
-authors = ["denimbluu <denim.bluu@gmail.com>"]
+description = "Default template for PDM package"
+authors = [{ name = "Joon Kang", email = "denim.bluu@gmail.com" }]
+dependencies = [
+    "loguru>=0.7.2",
+    "torch>=2.2.2",
+    "torchvision>=0.17.2",
+    "facenet-pytorch>=2.6.0",
+    "tensorboard>=2.17.0",
+    "streamlit>=1.37.0",
+    "watchdog>=4.0.1",
+    "imageio>=2.34.2",
+    "imageio-ffmpeg>=0.5.1",
+    "scikit-learn>=1.5.1",
+]
+requires-python = ">=3.10"
 readme = "README.md"
-packages = [{ include = "src" }]
-
-[tool.poetry.dependencies]
-python = "^3.10"
-mtcnn = "^0.1.1"
-tensorflow = "^2.16.2"
-loguru = "^0.7.2"
-torch = "^2.3.1"
-torchvision = "^0.18.1"
-facenet-pytorch = "2.5.2"
-tensorboard = "^2.17.0"
+license = { text = "MIT" }
 
 
-[tool.poetry.group.dev.dependencies]
-ptpython = "^3.0.27"
-mypy = "^1.10.0"
-ruff = "^0.4.8"
-ipython = "^8.25.0"
-notebook = "^7.2.1"
+[tool.pdm]
+distribution = true
+
+[tool.pdm.dev-dependencies]
+test = ["pytest>=8.3.2", "pytest-cov>=5.0.0"]
+lint = ["ruff>=0.5.5"]
+dev = ["pre-commit>=3.8.0", "pip>=24.2", "mypy>=1.11.1"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+fixable = ["ALL"]
+select = [
+    "E",
+    "W",
+    "F",
+    "I",   # Default rules (explicitly listed for clarity)
+    "B",   # flake8-bugbear: finds likely bugs and design problems
+    "C",   # flake8-comprehensions: writes better list/set/dict comprehensions
+    "N",   # pep8-naming: checks your naming conventions
+    "UP",  # pyupgrade: upgrades syntax for newer Python versions
+    "ERA", # eradicate: finds commented out code
+]
+
+# Exclude a variety of commonly ignored directories.
+exclude = [".git", ".ruff_cache", "**/__pycache__", "dist", "venv"]
+ignore = ["E501", "COM812", "ISC001", "B008", "B904"]
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]   # Ignore unused imports in __init__.py files
+"tests/**/*.py" = ["S101"] # Allow assert in tests
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.pylint]
+max-args = 8
+
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "double"
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"

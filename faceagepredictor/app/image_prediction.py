@@ -1,7 +1,7 @@
 import streamlit as st
 from PIL import Image
 
-from src.prediction.predict import predict_age
+from faceagepredictor.prediction.predict import predict_age
 
 
 def image_prediction_page(model, face_detector):

@@ -1,5 +1,5 @@
-from src.data.face_detection import FaceDetector
-from src.prediction.predict import load_model, predict_from_image
+from faceagepredictor.data.face_detection import FaceDetector
+from faceagepredictor.prediction.predict import load_model, predict_from_image
 
 
 def main():

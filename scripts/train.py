@@ -1,12 +1,13 @@
 import os
-import torch
 
-from src.data.data_prep import load_data
-from src.models.resnet_model import ResNetAgePredictor
-from src.training.train import train_with_progressive_unfreezing
-from src.utils.load_config import load_config
-from src.utils.metrics import calculate_mae, calculate_rmse
+import torch
 from torch.utils.tensorboard.writer import SummaryWriter
+
+from faceagepredictor.data.data_prep import load_data
+from faceagepredictor.models.resnet_model import ResNetAgePredictor
+from faceagepredictor.training.train import train_with_progressive_unfreezing
+from faceagepredictor.utils.load_config import load_config
+from faceagepredictor.utils.metrics import calculate_mae, calculate_rmse
 
 
 def main():
@@ -21,7 +22,6 @@ def main():
 
     # Initialise model (choose between ResNet and MobileNet)
     model = ResNetAgePredictor().to(device)
-    # model = MobileNetAgePredictor(pretrained=True).to(device)
 
     # Load TensorBoard writer
     # Initialize TensorBoard writer
