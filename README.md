@@ -5,6 +5,9 @@
 
 This project implements a deep learning model for predicting the age of a person from facial images. It utilises transfer learning with pre-trained ResNet or MobileNet architectures, implemented in PyTorch.
 
+## Warning
+It currently only works on Windows. This is due to the opencv2 dependency. On a new branch `feature-make-it-work-on-mac` added some tweaks on features to make it runnable on Mac but it is not stable.
+
 ## Demo
 https://github.com/user-attachments/assets/11b7719b-8380-45a5-a611-d2d214eb3b6c
 
